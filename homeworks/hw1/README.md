@@ -1,5 +1,7 @@
+Dependencies:
+- OCaml: `sudo apt-get install ocaml`
+- OPAM: [installation instructions](https://opam.ocaml.org/doc/Install.html)
+- OUnit: `opam install ounit`
+
 To run tests:
-- start ocaml REPL with `ocaml`
-- import the test file: `#use "homework1_test.ml"`
-    + Console output will indicate the first failing test (fix and rerun to see other fails)
-    + If all tests passed, console output will indicate "All tests passed"
+- From the `hw1` directory, run `./test.sh`
