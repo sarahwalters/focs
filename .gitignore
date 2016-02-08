@@ -3,3 +3,6 @@
 *.log
 *.cache
 */**/test
+*/**/*-checker.ml
+inclass
+tutorial
