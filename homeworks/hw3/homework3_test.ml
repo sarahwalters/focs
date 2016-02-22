@@ -1,134 +1,135 @@
 open OUnit2;;
+open Homework3;;
 
 let findTransitions_test test_ctxt =
-   assert_equal [("start", 'a', "one")] (Homework3.findTransitions (Homework3.dfaThreeA, "start", 'a'));;
-   assert_equal [("start", 'b', "start")] (Homework3.findTransitions (Homework3.dfaThreeA, "start", 'b'));;
-   assert_equal [("one", 'b', "one")] (Homework3.findTransitions (Homework3.dfaThreeA, "one", 'b'));;
-   assert_equal [(0, 'a', 0)] (Homework3.findTransitions (Homework3.nfaLastThreeB, 0, 'a'));;
-   assert_equal [(0, 'b', 0); (0, 'b', 1)] (Homework3.findTransitions (Homework3.nfaLastThreeB, 0, 'b'));;
+   assert_equal [("start", 'a', "one")] (findTransitions (dfaThreeA, "start", 'a'));;
+   assert_equal [("start", 'b', "start")] (findTransitions (dfaThreeA, "start", 'b'));;
+   assert_equal [("one", 'b', "one")] (findTransitions (dfaThreeA, "one", 'b'));;
+   assert_equal [(0, 'a', 0)] (findTransitions (nfaLastThreeB, 0, 'a'));;
+   assert_equal [(0, 'b', 0); (0, 'b', 1)] (findTransitions (nfaLastThreeB, 0, 'b'));;
 
 let isAccepting_test test_ctxt =
-  assert_equal true (Homework3.isAccepting (Homework3.dfaThreeA, "start"));;
-  assert_equal false (Homework3.isAccepting (Homework3.dfaThreeA, "one"));;
-  assert_equal false (Homework3.isAccepting (Homework3.dfaThreeA, "two"));;
-  assert_equal true (Homework3.isAccepting (Homework3.nfaLastThreeB, 3));;
-  assert_equal false (Homework3.isAccepting (Homework3.nfaLastThreeB, 0));;
+  assert_equal true (isAccepting (dfaThreeA, "start"));;
+  assert_equal false (isAccepting (dfaThreeA, "one"));;
+  assert_equal false (isAccepting (dfaThreeA, "two"));;
+  assert_equal true (isAccepting (nfaLastThreeB, 3));;
+  assert_equal false (isAccepting (nfaLastThreeB, 0));;
 
 let step_test test_ctxt =
-  assert_equal "one" (Homework3.step (Homework3.dfaThreeA, "start", 'a'));;
-  assert_equal "start" (Homework3.step (Homework3.dfaThreeA, "start", 'b'));;
-  assert_equal "two" (Homework3.step (Homework3.dfaThreeA, "one", 'a'));;
-  assert_equal "one" (Homework3.step (Homework3.dfaThreeA, "one", 'b'));;
-  assert_equal "start" (Homework3.step (Homework3.dfaThreeA, "two", 'a'));;
-  assert_equal "two" (Homework3.step (Homework3.dfaThreeA, "two", 'b'));;
+  assert_equal "one" (step (dfaThreeA, "start", 'a'));;
+  assert_equal "start" (step (dfaThreeA, "start", 'b'));;
+  assert_equal "two" (step (dfaThreeA, "one", 'a'));;
+  assert_equal "one" (step (dfaThreeA, "one", 'b'));;
+  assert_equal "start" (step (dfaThreeA, "two", 'a'));;
+  assert_equal "two" (step (dfaThreeA, "two", 'b'));;
 
 let steps_test test_ctxt =
-  assert_equal "start" (Homework3.steps (Homework3.dfaThreeA, "start", []));;
-  assert_equal "one" (Homework3.steps (Homework3.dfaThreeA, "start", ['a']));;
-  assert_equal "one" (Homework3.steps (Homework3.dfaThreeA, "start", ['a';'b']));;
-  assert_equal "two" (Homework3.steps (Homework3.dfaThreeA, "start", ['a';'b';'a']));;
-  assert_equal "one" (Homework3.steps (Homework3.dfaThreeA, "one", []));;
-  assert_equal "two" (Homework3.steps (Homework3.dfaThreeA, "one", ['a']));;
-  assert_equal "two" (Homework3.steps (Homework3.dfaThreeA, "one", ['a';'b']));;
-  assert_equal "start" (Homework3.steps (Homework3.dfaThreeA, "one", ['a';'b';'a']));;
+  assert_equal "start" (steps (dfaThreeA, "start", []));;
+  assert_equal "one" (steps (dfaThreeA, "start", ['a']));;
+  assert_equal "one" (steps (dfaThreeA, "start", ['a';'b']));;
+  assert_equal "two" (steps (dfaThreeA, "start", ['a';'b';'a']));;
+  assert_equal "one" (steps (dfaThreeA, "one", []));;
+  assert_equal "two" (steps (dfaThreeA, "one", ['a']));;
+  assert_equal "two" (steps (dfaThreeA, "one", ['a';'b']));;
+  assert_equal "start" (steps (dfaThreeA, "one", ['a';'b';'a']));;
 
 let isDFA_test test_ctxt =
-  assert_equal true (Homework3.isDFA (Homework3.dfaThreeA));;
-  assert_equal false (Homework3.isDFA (Homework3.nfaLastThreeB));;
+  assert_equal true (isDFA (dfaThreeA));;
+  assert_equal false (isDFA (nfaLastThreeB));;
 
 let acceptDFA_test test_ctxt =
-  assert_equal true (Homework3.acceptDFA (Homework3.dfaThreeA, ""));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfaThreeA, "a"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfaThreeA, "b"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfaThreeA, "aa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfaThreeA, "aaa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfaThreeA, "ababa"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfaThreeA, "abababa"));;
+  assert_equal true (acceptDFA (dfaThreeA, ""));;
+  assert_equal false (acceptDFA (dfaThreeA, "a"));;
+  assert_equal true (acceptDFA (dfaThreeA, "b"));;
+  assert_equal false (acceptDFA (dfaThreeA, "aa"));;
+  assert_equal true (acceptDFA (dfaThreeA, "aaa"));;
+  assert_equal true (acceptDFA (dfaThreeA, "ababa"));;
+  assert_equal false (acceptDFA (dfaThreeA, "abababa"));;
 
 let dfa_q2_a_test test_ctxt =
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, ""));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "a"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "b"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "aa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "ba"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "ab"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_a, "bb"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_a, "bbb"));;
+  assert_equal true (acceptDFA (dfa_q2_a, ""));;
+  assert_equal true (acceptDFA (dfa_q2_a, "a"));;
+  assert_equal true (acceptDFA (dfa_q2_a, "b"));;
+  assert_equal true (acceptDFA (dfa_q2_a, "aa"));;
+  assert_equal true (acceptDFA (dfa_q2_a, "ba"));;
+  assert_equal true (acceptDFA (dfa_q2_a, "ab"));;
+  assert_equal true (acceptDFA (dfa_q2_a, "bb"));;
+  assert_equal false (acceptDFA (dfa_q2_a, "bbb"));;
 
 let dfa_q2_b_test test_ctxt =
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, ""));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "a"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "ab"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "bab"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "baaa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "abaa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "abba"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_b, "bbba"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_b, "bbbb"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_b, "aaaa"));;
+  assert_equal true (acceptDFA (dfa_q2_b, ""));;
+  assert_equal true (acceptDFA (dfa_q2_b, "a"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "ab"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "bab"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "baaa"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "abaa"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "abba"));;
+  assert_equal true (acceptDFA (dfa_q2_b, "bbba"));;
+  assert_equal false (acceptDFA (dfa_q2_b, "bbbb"));;
+  assert_equal false (acceptDFA (dfa_q2_b, "aaaa"));;
 
 let dfa_q2_c_test test_ctxt =
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_c, ""));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_c, "a"));;
-  assert_equal false (Homework3.acceptDFA (Homework3.dfa_q2_c, "aa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_c, "aaa"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_c, "aaabbb"));;
-  assert_equal true (Homework3.acceptDFA (Homework3.dfa_q2_c, "bbbbaaa"));;
+  assert_equal false (acceptDFA (dfa_q2_c, ""));;
+  assert_equal false (acceptDFA (dfa_q2_c, "a"));;
+  assert_equal false (acceptDFA (dfa_q2_c, "aa"));;
+  assert_equal true (acceptDFA (dfa_q2_c, "aaa"));;
+  assert_equal true (acceptDFA (dfa_q2_c, "aaabbb"));;
+  assert_equal true (acceptDFA (dfa_q2_c, "bbbbaaa"));;
 
 let nfa_q2_d_test test_ctxt =
-  assert_equal true (Homework3.acceptNFA (Homework3.nfa_q2_d, "a"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.nfa_q2_d, "ba"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.nfa_q2_d, "aaba"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.nfa_q2_d, "aaaa"));;
-  assert_equal false (Homework3.acceptNFA (Homework3.nfa_q2_d, "aaab"));;
-  assert_equal false (Homework3.acceptNFA (Homework3.nfa_q2_d, "aaaab"));;
-  assert_equal false (Homework3.acceptNFA (Homework3.nfa_q2_d, "aaabab"));;
-  assert_equal false (Homework3.acceptNFA (Homework3.nfa_q2_d, ""));;
+  assert_equal true (acceptNFA (nfa_q2_d, "a"));;
+  assert_equal true (acceptNFA (nfa_q2_d, "ba"));;
+  assert_equal true (acceptNFA (nfa_q2_d, "aaba"));;
+  assert_equal true (acceptNFA (nfa_q2_d, "aaaa"));;
+  assert_equal false (acceptNFA (nfa_q2_d, "aaab"));;
+  assert_equal false (acceptNFA (nfa_q2_d, "aaaab"));;
+  assert_equal false (acceptNFA (nfa_q2_d, "aaabab"));;
+  assert_equal false (acceptNFA (nfa_q2_d, ""));;
 
 
 let keepTarget_test test_ctxt =
-  assert_equal [] (Homework3.keepTarget []);;
-  assert_equal [2;3] (Homework3.keepTarget [(1,'a',2);(1,'b',3)]);;
-  assert_equal [3;2] (Homework3.keepTarget [(1,'a',2);(1,'b',3);(2,'a',2)]);;
-  assert_equal ["start";"one";"two"] (Homework3.keepTarget Homework3.dfaThreeA.delta);;
-  assert_equal [0;1;2;3] (Homework3.keepTarget Homework3.nfaLastThreeB.delta);;
+  assert_equal [] (keepTarget []);;
+  assert_equal [2;3] (keepTarget [(1,'a',2);(1,'b',3)]);;
+  assert_equal [3;2] (keepTarget [(1,'a',2);(1,'b',3);(2,'a',2)]);;
+  assert_equal ["start";"one";"two"] (keepTarget dfaThreeA.delta);;
+  assert_equal [0;1;2;3] (keepTarget nfaLastThreeB.delta);;
 
 let isAcceptingAny_test test_ctxt =
-  assert_equal false (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, []));;
-  assert_equal false (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, [0]));;
-  assert_equal false (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, [0;1]));;
-  assert_equal false (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, [0;1;2]));;
-  assert_equal true (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, [0;1;2;3]));;
-  assert_equal true (Homework3.isAcceptingAny (Homework3.nfaLastThreeB, [3]));;
+  assert_equal false (isAcceptingAny (nfaLastThreeB, []));;
+  assert_equal false (isAcceptingAny (nfaLastThreeB, [0]));;
+  assert_equal false (isAcceptingAny (nfaLastThreeB, [0;1]));;
+  assert_equal false (isAcceptingAny (nfaLastThreeB, [0;1;2]));;
+  assert_equal true (isAcceptingAny (nfaLastThreeB, [0;1;2;3]));;
+  assert_equal true (isAcceptingAny (nfaLastThreeB, [3]));;
 
 let stepAll_test test_ctxt =
-  assert_equal [] (Homework3.stepAll (Homework3.dfaThreeA, [], 'a'));;
-  assert_equal ["one"] (Homework3.stepAll (Homework3.dfaThreeA, ["start"], 'a'));;
-  assert_equal ["start"] (Homework3.stepAll (Homework3.dfaThreeA, ["start"], 'b'));;
-  assert_equal ["one";"two"] (Homework3.stepAll (Homework3.dfaThreeA, ["start";"one"], 'a'));;
-  assert_equal ["start";"one"] (Homework3.stepAll (Homework3.dfaThreeA, ["start";"one"], 'b'));;
-  assert_equal [0] (Homework3.stepAll (Homework3.nfaLastThreeB, [0;1], 'a'));;
-  assert_equal [0;1;2] (Homework3.stepAll (Homework3.nfaLastThreeB, [0;1], 'b'));;
+  assert_equal [] (stepAll (dfaThreeA, [], 'a'));;
+  assert_equal ["one"] (stepAll (dfaThreeA, ["start"], 'a'));;
+  assert_equal ["start"] (stepAll (dfaThreeA, ["start"], 'b'));;
+  assert_equal ["one";"two"] (stepAll (dfaThreeA, ["start";"one"], 'a'));;
+  assert_equal ["start";"one"] (stepAll (dfaThreeA, ["start";"one"], 'b'));;
+  assert_equal [0] (stepAll (nfaLastThreeB, [0;1], 'a'));;
+  assert_equal [0;1;2] (stepAll (nfaLastThreeB, [0;1], 'b'));;
 
 let stepsAll_test test_ctxt =
-  assert_equal [] (Homework3.stepsAll (Homework3.dfaThreeA, [], []));;
-  assert_equal [] (Homework3.stepsAll (Homework3.dfaThreeA, [], ['a']));;
-  assert_equal [] (Homework3.stepsAll (Homework3.dfaThreeA, [], ['a';'b']));;
-  assert_equal ["start"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start"], []));;
-  assert_equal ["one"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start"], ['a']));;
-  assert_equal ["one"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start"], ['a';'b']));;
-  assert_equal ["two"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start"], ['a';'a']));;
-  assert_equal ["two";"start"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start";"one"], ['a';'a']));;
-  assert_equal ["two";"start"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start";"one"], ['a';'a';'b']));;
-  assert_equal ["start";"one"] (Homework3.stepsAll (Homework3.dfaThreeA, ["start";"one"], ['a';'a';'b';'a']));;
-  assert_equal [0;1;2;3] (Homework3.stepsAll (Homework3.nfaLastThreeB, [0;1], ['a';'b';'b';'b']));;
+  assert_equal [] (stepsAll (dfaThreeA, [], []));;
+  assert_equal [] (stepsAll (dfaThreeA, [], ['a']));;
+  assert_equal [] (stepsAll (dfaThreeA, [], ['a';'b']));;
+  assert_equal ["start"] (stepsAll (dfaThreeA, ["start"], []));;
+  assert_equal ["one"] (stepsAll (dfaThreeA, ["start"], ['a']));;
+  assert_equal ["one"] (stepsAll (dfaThreeA, ["start"], ['a';'b']));;
+  assert_equal ["two"] (stepsAll (dfaThreeA, ["start"], ['a';'a']));;
+  assert_equal ["two";"start"] (stepsAll (dfaThreeA, ["start";"one"], ['a';'a']));;
+  assert_equal ["two";"start"] (stepsAll (dfaThreeA, ["start";"one"], ['a';'a';'b']));;
+  assert_equal ["start";"one"] (stepsAll (dfaThreeA, ["start";"one"], ['a';'a';'b';'a']));;
+  assert_equal [0;1;2;3] (stepsAll (nfaLastThreeB, [0;1], ['a';'b';'b';'b']));;
 
 let acceptNFA_test test_ctxt =
-  assert_equal false (Homework3.acceptNFA (Homework3.dfaThreeA, "babab"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.dfaThreeA, "bababa"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.dfaThreeA, "bababab"));;
-  assert_equal false (Homework3.acceptNFA (Homework3.nfaLastThreeB, "abb"));;
-  assert_equal true (Homework3.acceptNFA (Homework3.nfaLastThreeB, "abbb"));;
+  assert_equal false (acceptNFA (dfaThreeA, "babab"));;
+  assert_equal true (acceptNFA (dfaThreeA, "bababa"));;
+  assert_equal true (acceptNFA (dfaThreeA, "bababab"));;
+  assert_equal false (acceptNFA (nfaLastThreeB, "abb"));;
+  assert_equal true (acceptNFA (nfaLastThreeB, "abbb"));;
 
 
 let suite =
