@@ -67,6 +67,32 @@ let tm_q2_b_test test_ctxt =
   assert_equal false (run tm_q2_b "aaa");;
   assert_equal false (run tm_q2_b "abbb");;
 
+let binaryAddition_test test_ctxt =
+  assert_equal false (run binaryAddition "");;
+  assert_equal true (run binaryAddition "##");;
+  assert_equal false (run binaryAddition "000");;
+  assert_equal false (run binaryAddition "000#000");;
+  assert_equal true (run binaryAddition "000##000");;
+  assert_equal true (run binaryAddition "000#000#000");;
+  assert_equal true (run binaryAddition "001#000#001");;
+  assert_equal false (run binaryAddition "000#001#000");;
+  assert_equal true (run binaryAddition "000#001#001");;
+  assert_equal false (run binaryAddition "001#000#011");;
+  assert_equal true (run binaryAddition "001#001#010");;
+  assert_equal false (run binaryAddition "001#001#011");;
+  assert_equal false (run binaryAddition "001#001#110");;
+  assert_equal true (run binaryAddition "101#001#110");;
+  assert_equal true (run binaryAddition "101#010#111");;
+  assert_equal false (run binaryAddition "00111#10101#11110");;
+  assert_equal true (run binaryAddition "00111#10101#11100");;
+  assert_equal true (run binaryAddition "1#000001#10");;
+  assert_equal true (run binaryAddition "0000001#0#1");;
+  assert_equal true (run binaryAddition "1#1#00000010");;
+  assert_equal true (run binaryAddition "#111#000111");;
+  assert_equal true (run binaryAddition "0101##101");;
+
+
+
 let suite =
   "suite">:::
     ["startConfig_test">::startConfig_test;
@@ -76,7 +102,8 @@ let suite =
      "step_test">::step_test;
      "run_test">::run_test;
      "tm_q2_a_test">::tm_q2_a_test;
-     "tm_q2_b_test">::tm_q2_b_test]
+     "tm_q2_b_test">::tm_q2_b_test;
+     "binaryAddition_test">::binaryAddition_test]
 
 let () =
    run_test_tt_main suite
