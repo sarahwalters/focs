@@ -308,20 +308,88 @@ let add1 =
 
 
 
-
 (* QUESTION 3 *)
 
-
+let letters = ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j";"k";"l";"m";"n";"o";"p";"q";"r";"s";"t";"u";"v";"w";"x";"y";"z"]
 let permutation =
-  { states = ["x"];
-    input_alphabet = ["x"];
-    tape_alphabet = ["x"];
-    start = "x";
-    accept = "x";
-    reject = "x";
-    blank = "x";
-    left_marker = "x";
-    delta = (fun x -> ("x","x",0)) }
+  { states = [("start","-");
+              ("left","-");
+              ("rewind","-");
+              ("ff2","-");
+              ("check","-");
+              ("reject","-");
+              ("accept","-")] @
+              pairs ["ff1"; "find"] letters;
+    input_alphabet = letters;
+    tape_alphabet = [">";"_";"X";"#"] @ letters;
+    start = ("start","-");
+    accept = ("accept","-");
+    reject = ("reject","-");
+    blank = "_";
+    left_marker = ">";
+    delta = (fun x -> match x with
+    | (("start","-"),">") -> (("left","-"),">",1)
+    | (("start",id),sym) -> (("reject","-"),sym,1)
+
+    | (("left","-"),">") -> (("reject","-"),">",1)
+    | (("left","-"),"_") -> (("reject","-"),"_",1)
+    | (("left","-"),"X") -> (("left","-"),"X",1)
+    | (("left","-"),"#") -> (("check","-"),"X",1)
+    | (("left","-"),letter) -> (("ff1",letter),"X",1)
+
+    | (("ff1",savedLetter),">") -> (("reject","-"),">",1)
+    | (("ff1",savedLetter),"_") -> (("reject","-"),"_",1)
+    | (("ff1",savedLetter),"X") -> (("reject","-"),"X",1)
+    | (("ff1",savedLetter),"#") -> (("find",savedLetter),"#",1)
+    | (("ff1",savedLetter),letter) -> (("ff1",savedLetter),letter,1)
+
+    | (("find","a"),"a") -> (("ff2","-"),"X",1)
+    | (("find","b"),"b") -> (("ff2","-"),"X",1)
+    | (("find","c"),"c") -> (("ff2","-"),"X",1)
+    | (("find","d"),"d") -> (("ff2","-"),"X",1)
+    | (("find","e"),"e") -> (("ff2","-"),"X",1)
+    | (("find","f"),"f") -> (("ff2","-"),"X",1)
+    | (("find","g"),"g") -> (("ff2","-"),"X",1)
+    | (("find","h"),"h") -> (("ff2","-"),"X",1)
+    | (("find","i"),"i") -> (("ff2","-"),"X",1)
+    | (("find","j"),"j") -> (("ff2","-"),"X",1)
+    | (("find","k"),"k") -> (("ff2","-"),"X",1)
+    | (("find","l"),"l") -> (("ff2","-"),"X",1)
+    | (("find","m"),"m") -> (("ff2","-"),"X",1)
+    | (("find","n"),"n") -> (("ff2","-"),"X",1)
+    | (("find","o"),"o") -> (("ff2","-"),"X",1)
+    | (("find","p"),"p") -> (("ff2","-"),"X",1)
+    | (("find","q"),"q") -> (("ff2","-"),"X",1)
+    | (("find","r"),"r") -> (("ff2","-"),"X",1)
+    | (("find","s"),"s") -> (("ff2","-"),"X",1)
+    | (("find","t"),"t") -> (("ff2","-"),"X",1)
+    | (("find","u"),"u") -> (("ff2","-"),"X",1)
+    | (("find","v"),"v") -> (("ff2","-"),"X",1)
+    | (("find","w"),"w") -> (("ff2","-"),"X",1)
+    | (("find","x"),"x") -> (("ff2","-"),"X",1)
+    | (("find","y"),"y") -> (("ff2","-"),"X",1)
+    | (("find","z"),"z") -> (("ff2","-"),"X",1)
+    | (("find", letter),">") -> (("reject","-"),">",1)
+    | (("find", letter),"_") -> (("reject","-"),"_",1)
+    | (("find", letter),"X") -> (("find",letter),"X",1)
+    | (("find", letter),"#") -> (("reject","-"),"#",1)
+    | (("find", letter),differentLetter) -> (("find",letter),differentLetter,1)
+
+    | (("ff2","-"),">") -> (("reject","-"),">",1)
+    | (("ff2","-"),"_") -> (("rewind","-"),"_",0)
+    | (("ff2","-"),"X") -> (("ff2","-"),"X",1)
+    | (("ff2","-"),"#") -> (("reject","-"),">",1)
+    | (("ff2","-"),letter) -> (("ff2","-"),letter,1)
+
+    | (("rewind","-"),">") -> (("left","-"),">",1)
+    | (("rewind","-"),"_") -> (("reject","-"),"_",1)
+    | (("rewind","-"),"X") -> (("rewind","-"),"X",0)
+    | (("rewind","-"),"#") -> (("rewind","-"),"#",0)
+    | (("rewind","-"),letter) -> (("rewind","-"),letter,0)
+
+    | (("check","-"),"X") -> (("check","-"),"X",1)
+    | (("check","-"),"_") -> (("accept","-"),"_",1)
+    | (("check","-"),sym) -> (("reject","-"),sym,1))}
 
 
 let copies n = failwith "copies not implemented yet"
