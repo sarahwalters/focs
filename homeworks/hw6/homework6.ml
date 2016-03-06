@@ -6,8 +6,7 @@ Name: Sarah Walters
 
 Email: sarah.walters@students.olin.edu
 
-Remarks, if any: ~2h so far
-
+Remarks, if any: Took ~4h
 *)
 
 
@@ -306,8 +305,6 @@ let add1 =
     | (_,sym) -> (("rej",-1,-1),sym,1))}
 
 
-
-
 (* QUESTION 3 *)
 
 let letters = ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j";"k";"l";"m";"n";"o";"p";"q";"r";"s";"t";"u";"v";"w";"x";"y";"z"]
@@ -426,5 +423,3 @@ let copies n =
     | (("rewind","-",-1),readChar) -> (("rewind","-",-1),readChar,0)
 
     | ((_,_,_),readChar) -> (("reject","-",-1),readChar,1))}
-
-let copies_trans = (fun (x,y,z) -> x^"|"^y^"|"^(string_of_int z));;
