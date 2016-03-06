@@ -20,6 +20,7 @@ let add1_transformed = transform add1 add1_trans;;
 let permutation_trans = (fun (x,y) -> x^"|"^y);;
 let permutation_transformed = transform permutation permutation_trans;;
 
+let copies_trans = (fun (x,y,z) -> x^"|"^y^"|"^(string_of_int z));;
 
 (* TESTS *)
 let triples_test test_ctxt =
@@ -87,6 +88,32 @@ let permutation_test test_ctxt =
   assert_equal false (run permutation_transformed "a#a#a");;
   assert_equal false (run permutation_transformed "hello");;
 
+let copies_test test_ctxt =
+  assert_equal true (run (transform (copies 1) copies_trans) "");;
+  assert_equal true (run (transform (copies 1) copies_trans) "1000");;
+  assert_equal true (run (transform (copies 1) copies_trans) "0101010101");;
+  assert_equal false (run (transform (copies 1) copies_trans) "0#1");;
+  assert_equal false (run (transform (copies 1) copies_trans) "10#10");;
+  assert_equal false (run (transform (copies 1) copies_trans) "10#10#10");;
+
+  assert_equal true (run (transform (copies 2) copies_trans) "#");;
+  assert_equal true (run (transform (copies 2) copies_trans) "1000#1000");;
+  assert_equal true (run (transform (copies 2) copies_trans) "00#00");;
+  assert_equal true (run (transform (copies 2) copies_trans) "101#101");;
+  assert_equal false (run (transform (copies 2) copies_trans) "");;
+  assert_equal false (run (transform (copies 2) copies_trans) "##");;
+  assert_equal false (run (transform (copies 2) copies_trans) "0#1");;
+  assert_equal false (run (transform (copies 2) copies_trans) "0#0#0");;
+  assert_equal false (run (transform (copies 2) copies_trans) "00#01");;
+
+  assert_equal true (run (transform (copies 3) copies_trans) "##");;
+  assert_equal true (run (transform (copies 3) copies_trans) "01#01#01");;
+  assert_equal true (run (transform (copies 3) copies_trans) "1001#1001#1001");;
+  assert_equal false (run (transform (copies 3) copies_trans) "");;
+  assert_equal false (run (transform (copies 3) copies_trans) "#");;
+  assert_equal false (run (transform (copies 3) copies_trans) "###");;
+  assert_equal false (run (transform (copies 3) copies_trans) "0#0");;
+  assert_equal false (run (transform (copies 3) copies_trans) "10#10#10#10");;
 
 let suite =
   "suite">:::
@@ -96,7 +123,8 @@ let suite =
      "transformStates_test">::transformStates_test;
      "transformDelta_test">::transformDelta_test;
      "transform_test">::transform_test;
-     "permutation_test">::permutation_test]
+     "permutation_test">::permutation_test;
+     "copies_test">::copies_test]
 
 let () =
    run_test_tt_main suite

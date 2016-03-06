@@ -343,37 +343,13 @@ let permutation =
     | (("ff1",savedLetter),"#") -> (("find",savedLetter),"#",1)
     | (("ff1",savedLetter),letter) -> (("ff1",savedLetter),letter,1)
 
-    | (("find","a"),"a") -> (("ff2","-"),"X",1) (* less repetitive way to do this? *)
-    | (("find","b"),"b") -> (("ff2","-"),"X",1)
-    | (("find","c"),"c") -> (("ff2","-"),"X",1)
-    | (("find","d"),"d") -> (("ff2","-"),"X",1)
-    | (("find","e"),"e") -> (("ff2","-"),"X",1)
-    | (("find","f"),"f") -> (("ff2","-"),"X",1)
-    | (("find","g"),"g") -> (("ff2","-"),"X",1)
-    | (("find","h"),"h") -> (("ff2","-"),"X",1)
-    | (("find","i"),"i") -> (("ff2","-"),"X",1)
-    | (("find","j"),"j") -> (("ff2","-"),"X",1)
-    | (("find","k"),"k") -> (("ff2","-"),"X",1)
-    | (("find","l"),"l") -> (("ff2","-"),"X",1)
-    | (("find","m"),"m") -> (("ff2","-"),"X",1)
-    | (("find","n"),"n") -> (("ff2","-"),"X",1)
-    | (("find","o"),"o") -> (("ff2","-"),"X",1)
-    | (("find","p"),"p") -> (("ff2","-"),"X",1)
-    | (("find","q"),"q") -> (("ff2","-"),"X",1)
-    | (("find","r"),"r") -> (("ff2","-"),"X",1)
-    | (("find","s"),"s") -> (("ff2","-"),"X",1)
-    | (("find","t"),"t") -> (("ff2","-"),"X",1)
-    | (("find","u"),"u") -> (("ff2","-"),"X",1)
-    | (("find","v"),"v") -> (("ff2","-"),"X",1)
-    | (("find","w"),"w") -> (("ff2","-"),"X",1)
-    | (("find","x"),"x") -> (("ff2","-"),"X",1)
-    | (("find","y"),"y") -> (("ff2","-"),"X",1)
-    | (("find","z"),"z") -> (("ff2","-"),"X",1)
-    | (("find", letter),">") -> (("reject","-"),">",1)
-    | (("find", letter),"_") -> (("reject","-"),"_",1)
-    | (("find", letter),"X") -> (("find",letter),"X",1)
-    | (("find", letter),"#") -> (("reject","-"),"#",1)
-    | (("find", letter),differentLetter) -> (("find",letter),differentLetter,1)
+    | (("find", savedLetter),">") -> (("reject","-"),">",1)
+    | (("find", savedLetter),"_") -> (("reject","-"),"_",1)
+    | (("find", savedLetter),"X") -> (("find",savedLetter),"X",1)
+    | (("find", savedLetter),"#") -> (("reject","-"),"#",1)
+    | (("find", savedLetter),readLetter) ->
+        if (savedLetter = readLetter) then (("ff2","-"),"X",1)
+        else (("find",savedLetter),readLetter,1)
 
     | (("ff2","-"),">") -> (("reject","-"),">",1)
     | (("ff2","-"),"_") -> (("rewind","-"),"_",0)
@@ -394,4 +370,61 @@ let permutation =
     | ((_,_),sym) -> (("reject","-"),sym,1))}
 
 
-let copies n = failwith "copies not implemented yet"
+let copies n =
+  if (n < 1) then failwith "Invalid value of n" else
+  { states = [("start","-",-1);
+              ("accept","-",-1);
+              ("reject","-",-1);
+              ("left","-",-1);
+              ("rewind","-",-1);
+              ("done?","-",-1)] @
+              (triples ["ff";"check"] ["0";"1";"#"] (range (n-1)));
+    input_alphabet = ["0";"1"];
+    tape_alphabet = [">";"X";"#";"_";"0";"1"];
+    start = ("start","-",-1);
+    accept = ("accept","-",-1);
+    reject = ("reject","-",-1);
+    blank = "_";
+    left_marker = ">";
+    delta = (fun x -> match x with
+    | (("start","-",-1),">") -> (("left","-",-1),">",1)
+    | (("start",_,_),readChar) -> (("reject","-",-1),readChar,1)
+
+    | (("left","-",-1),"X") -> (("left","-",-1),"X",1)
+    | (("left","-",-1),"0") -> (("ff","0",0),"X",1)
+    | (("left","-",-1),"1") -> (("ff","1",0),"X",1)
+    | (("left","-",-1),"#") -> (("ff","#",1),"#",1)
+    | (("left","-",-1),"_") ->
+        if (n = 1) then (("accept","-",-1),"_",1)
+        else (("reject","-",-1),"_",1)
+
+    | (("ff",savedChar,num),">") -> (("reject","-",-1),">",1)
+    | (("ff",savedChar,num),"X") -> (("reject","-",-1),"X",1)
+    | (("ff",savedChar,num),"#") ->
+        if (num >= n-1) then (("reject","-",-1),"#",1)
+        else if (savedChar = "#") then (("ff","#",num+1),"#",1)
+        else (("check",savedChar,num),"#",1)
+    | (("ff",savedChar,num),"_") ->
+        if (num = n-1) then (("done?","-",-1),"_",0)
+        else (("reject","-",-1),"_",1)
+    | (("ff",savedChar,num),readChar) -> (("ff",savedChar,num),readChar,1)
+
+    | (("check",savedChar,num),">") -> (("reject","-",-1),">",1)
+    | (("check",savedChar,num),"X") -> (("check",savedChar,num),"X",1)
+    | (("check",savedChar,num),"#") -> (("reject","-",-1),"#",1)
+    | (("check",savedChar,num),"_") -> (("reject","-",-1),"_",1)
+    | (("check",savedChar,num),readChar) ->
+        if (savedChar = readChar) then (("ff",savedChar,num+1),"X",1)
+        else (("reject","-",-1),readChar,1)
+
+    | (("done?","-",-1),">") -> (("accept","-",-1),">",1)
+    | (("done?","-",-1),"#") -> (("done?","-",-1),"#",0)
+    | (("done?","-",-1),"X") -> (("done?","-",-1),"X",0)
+    | (("done?","-",-1),readChar) -> (("rewind","-",-1),readChar,0)
+
+    | (("rewind","-",-1),">") -> (("left","-",-1),">",1)
+    | (("rewind","-",-1),readChar) -> (("rewind","-",-1),readChar,0)
+
+    | ((_,_,_),readChar) -> (("reject","-",-1),readChar,1))}
+
+let copies_trans = (fun (x,y,z) -> x^"|"^y^"|"^(string_of_int z));;
