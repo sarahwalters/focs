@@ -343,7 +343,7 @@ let permutation =
     | (("ff1",savedLetter),"#") -> (("find",savedLetter),"#",1)
     | (("ff1",savedLetter),letter) -> (("ff1",savedLetter),letter,1)
 
-    | (("find","a"),"a") -> (("ff2","-"),"X",1)
+    | (("find","a"),"a") -> (("ff2","-"),"X",1) (* less repetitive way to do this? *)
     | (("find","b"),"b") -> (("ff2","-"),"X",1)
     | (("find","c"),"c") -> (("ff2","-"),"X",1)
     | (("find","d"),"d") -> (("ff2","-"),"X",1)
@@ -389,7 +389,9 @@ let permutation =
 
     | (("check","-"),"X") -> (("check","-"),"X",1)
     | (("check","-"),"_") -> (("accept","-"),"_",1)
-    | (("check","-"),sym) -> (("reject","-"),sym,1))}
+    | (("check","-"),sym) -> (("reject","-"),sym,1)
+
+    | ((_,_),sym) -> (("reject","-"),sym,1))}
 
 
 let copies n = failwith "copies not implemented yet"

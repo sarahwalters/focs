@@ -17,6 +17,9 @@ let new_delta = transformDelta states delta trans;;
 let add1_trans = (fun (x,y,z) -> x^"|"^(string_of_int y)^"|"^(string_of_int z));;
 let add1_transformed = transform add1 add1_trans;;
 
+let permutation_trans = (fun (x,y) -> x^"|"^y);;
+let permutation_transformed = transform permutation permutation_trans;;
+
 
 (* TESTS *)
 let triples_test test_ctxt =
@@ -65,6 +68,26 @@ let transform_test test_ctxt =
   assert_equal true (run add1_transformed "011#100");;
   assert_equal false (run add1_transformed "011#010");;
 
+let permutation_test test_ctxt =
+  assert_equal true (run permutation_transformed "#");;
+  assert_equal true (run permutation_transformed "a#a");;
+  assert_equal true (run permutation_transformed "kk#kk");;
+  assert_equal true (run permutation_transformed "hello#elhol");;
+  assert_equal true (run permutation_transformed "obb#bob");;
+  assert_equal true (run permutation_transformed "germany#mnayrge");;
+
+  assert_equal false (run permutation_transformed "");;
+  assert_equal false (run permutation_transformed "a#");;
+  assert_equal false (run permutation_transformed "#a");;
+  assert_equal false (run permutation_transformed "aaa#aaaa");;
+  assert_equal false (run permutation_transformed "aaaa#aaa");;
+  assert_equal false (run permutation_transformed "hello#hell");;
+  assert_equal false (run permutation_transformed "hell#hello");;
+  assert_equal false (run permutation_transformed "aab#bba");;
+  assert_equal false (run permutation_transformed "a#a#a");;
+  assert_equal false (run permutation_transformed "hello");;
+
+
 let suite =
   "suite">:::
     ["triples_test">::triples_test;
@@ -72,7 +95,8 @@ let suite =
      "range_test">::range_test;
      "transformStates_test">::transformStates_test;
      "transformDelta_test">::transformDelta_test;
-     "transform_test">::transform_test]
+     "transform_test">::transform_test;
+     "permutation_test">::permutation_test]
 
 let () =
    run_test_tt_main suite
