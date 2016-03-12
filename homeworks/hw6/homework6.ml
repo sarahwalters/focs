@@ -308,7 +308,10 @@ let add1 =
 (* QUESTION 3 *)
 
 let letters = ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j";"k";"l";"m";"n";"o";"p";"q";"r";"s";"t";"u";"v";"w";"x";"y";"z"]
-let permutation =
+
+let permutation_trans = (fun (x,y) -> x^"|"^y);;
+
+let permutation_untransformed =
   { states = [("start","-");
               ("left","-");
               ("rewind","-");
@@ -366,8 +369,12 @@ let permutation =
 
     | ((_,_),sym) -> (("reject","-"),sym,1))}
 
+let permutation = transform permutation_untransformed permutation_trans
 
-let copies n =
+
+let copies_trans = (fun (x,y,z) -> x^"|"^y^"|"^(string_of_int z));;
+
+let copies_untransformed n =
   if (n < 1) then failwith "Invalid value of n" else
   { states = [("start","-",-1);
               ("accept","-",-1);
@@ -423,3 +430,7 @@ let copies n =
     | (("rewind","-",-1),readChar) -> (("rewind","-",-1),readChar,0)
 
     | ((_,_,_),readChar) -> (("reject","-",-1),readChar,1))}
+
+
+let copies n =
+  transform (copies_untransformed n) copies_trans

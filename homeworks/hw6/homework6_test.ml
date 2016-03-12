@@ -17,11 +17,6 @@ let new_delta = transformDelta states delta trans;;
 let add1_trans = (fun (x,y,z) -> x^"|"^(string_of_int y)^"|"^(string_of_int z));;
 let add1_transformed = transform add1 add1_trans;;
 
-let permutation_trans = (fun (x,y) -> x^"|"^y);;
-let permutation_transformed = transform permutation permutation_trans;;
-
-let copies_trans = (fun (x,y,z) -> x^"|"^y^"|"^(string_of_int z));;
-
 (* TESTS *)
 let triples_test test_ctxt =
   assert_equal [] (triples [] [] []);;
@@ -70,50 +65,50 @@ let transform_test test_ctxt =
   assert_equal false (run add1_transformed "011#010");;
 
 let permutation_test test_ctxt =
-  assert_equal true (run permutation_transformed "#");;
-  assert_equal true (run permutation_transformed "a#a");;
-  assert_equal true (run permutation_transformed "kk#kk");;
-  assert_equal true (run permutation_transformed "hello#elhol");;
-  assert_equal true (run permutation_transformed "obb#bob");;
-  assert_equal true (run permutation_transformed "germany#mnayrge");;
+  assert_equal true (run permutation "#");;
+  assert_equal true (run permutation "a#a");;
+  assert_equal true (run permutation "kk#kk");;
+  assert_equal true (run permutation "hello#elhol");;
+  assert_equal true (run permutation "obb#bob");;
+  assert_equal true (run permutation "germany#mnayrge");;
 
-  assert_equal false (run permutation_transformed "");;
-  assert_equal false (run permutation_transformed "a#");;
-  assert_equal false (run permutation_transformed "#a");;
-  assert_equal false (run permutation_transformed "aaa#aaaa");;
-  assert_equal false (run permutation_transformed "aaaa#aaa");;
-  assert_equal false (run permutation_transformed "hello#hell");;
-  assert_equal false (run permutation_transformed "hell#hello");;
-  assert_equal false (run permutation_transformed "aab#bba");;
-  assert_equal false (run permutation_transformed "a#a#a");;
-  assert_equal false (run permutation_transformed "hello");;
+  assert_equal false (run permutation "");;
+  assert_equal false (run permutation "a#");;
+  assert_equal false (run permutation "#a");;
+  assert_equal false (run permutation "aaa#aaaa");;
+  assert_equal false (run permutation "aaaa#aaa");;
+  assert_equal false (run permutation "hello#hell");;
+  assert_equal false (run permutation "hell#hello");;
+  assert_equal false (run permutation "aab#bba");;
+  assert_equal false (run permutation "a#a#a");;
+  assert_equal false (run permutation "hello");;
 
 let copies_test test_ctxt =
-  assert_equal true (run (transform (copies 1) copies_trans) "");;
-  assert_equal true (run (transform (copies 1) copies_trans) "1000");;
-  assert_equal true (run (transform (copies 1) copies_trans) "0101010101");;
-  assert_equal false (run (transform (copies 1) copies_trans) "0#1");;
-  assert_equal false (run (transform (copies 1) copies_trans) "10#10");;
-  assert_equal false (run (transform (copies 1) copies_trans) "10#10#10");;
+  assert_equal true (run (copies 1) "");;
+  assert_equal true (run (copies 1) "1000");;
+  assert_equal true (run (copies 1) "0101010101");;
+  assert_equal false (run (copies 1) "0#1");;
+  assert_equal false (run (copies 1) "10#10");;
+  assert_equal false (run (copies 1) "10#10#10");;
 
-  assert_equal true (run (transform (copies 2) copies_trans) "#");;
-  assert_equal true (run (transform (copies 2) copies_trans) "1000#1000");;
-  assert_equal true (run (transform (copies 2) copies_trans) "00#00");;
-  assert_equal true (run (transform (copies 2) copies_trans) "101#101");;
-  assert_equal false (run (transform (copies 2) copies_trans) "");;
-  assert_equal false (run (transform (copies 2) copies_trans) "##");;
-  assert_equal false (run (transform (copies 2) copies_trans) "0#1");;
-  assert_equal false (run (transform (copies 2) copies_trans) "0#0#0");;
-  assert_equal false (run (transform (copies 2) copies_trans) "00#01");;
+  assert_equal true (run (copies 2) "#");;
+  assert_equal true (run (copies 2) "1000#1000");;
+  assert_equal true (run (copies 2) "00#00");;
+  assert_equal true (run (copies 2) "101#101");;
+  assert_equal false (run (copies 2) "");;
+  assert_equal false (run (copies 2) "##");;
+  assert_equal false (run (copies 2) "0#1");;
+  assert_equal false (run (copies 2) "0#0#0");;
+  assert_equal false (run (copies 2) "00#01");;
 
-  assert_equal true (run (transform (copies 3) copies_trans) "##");;
-  assert_equal true (run (transform (copies 3) copies_trans) "01#01#01");;
-  assert_equal true (run (transform (copies 3) copies_trans) "1001#1001#1001");;
-  assert_equal false (run (transform (copies 3) copies_trans) "");;
-  assert_equal false (run (transform (copies 3) copies_trans) "#");;
-  assert_equal false (run (transform (copies 3) copies_trans) "###");;
-  assert_equal false (run (transform (copies 3) copies_trans) "0#0");;
-  assert_equal false (run (transform (copies 3) copies_trans) "10#10#10#10");;
+  assert_equal true (run (copies 3) "##");;
+  assert_equal true (run (copies 3) "01#01#01");;
+  assert_equal true (run (copies 3) "1001#1001#1001");;
+  assert_equal false (run (copies 3) "");;
+  assert_equal false (run (copies 3) "#");;
+  assert_equal false (run (copies 3) "###");;
+  assert_equal false (run (copies 3) "0#0");;
+  assert_equal false (run (copies 3) "10#10#10#10");;
 
 let suite =
   "suite">:::
