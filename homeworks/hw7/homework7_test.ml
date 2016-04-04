@@ -80,18 +80,19 @@ let addition_test test_ctxt =
   assert_equal false (generate 10 addition "x+=");;
   assert_equal false (generate 10 addition "xx+xx=xxx");;
   assert_equal false (generate 10 addition "xx+xx=xxxxx");;
+  assert_equal false (generate 10 addition "+");;
+  assert_equal false (generate 10 addition "=");;
 
 let powers2_test test_ctxt =
   assert_equal true (generate 10 powers2 "a");;
-  assert_equal true (generate 10 powers2 "a");;
   assert_equal true (generate 10 powers2 "aa");;
   assert_equal true (generate 10 powers2 "aaaa");;
-  assert_equal true (generate 10 powers2 "aaaaaaaa");;
-  assert_equal true (generate 16 powers2 "aaaaaaaaaaaaaaaa");;
+  assert_equal true (generate 30 powers2 "aaaaaaaa");;
+  assert_equal true (generate 30 powers2 "aaaaaaaaaaaaaaaa");;
 
   assert_equal false (generate 10 powers2 "");;
   assert_equal false (generate 10 powers2 "aaa");;
-  assert_equal false (generate 10 powers2 "aaaaaa")
+  assert_equal false (generate 10 powers2 "aaaaaa");;
 
 let suite =
   "suite">:::

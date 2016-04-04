@@ -6,8 +6,16 @@ Name: Sarah Walters
 
 Email: sarah.walters@students.olin.edu
 
-Remarks, if any: Took ~2h
+Remarks, if any: Took ~5h
+I answered the last question three times. The final version (powers2) I'm happy with; the others
+I'm including in case you're curious or in case I want them for reference in the future.
 
+The first draft (powers2limited) generates sequentially larger nonterminal exponents,
+then translates to terminal a's at the end. It's fast, but it can't generate arbitrarily long
+strings of a's.
+
+The second draft (powers2turing) simulates a Turing machine. In theory it works -- I know it works
+for "a" and "aa", but it's too slow to run in a reasonable amount of time on longer input strings.
 *)
 
 
@@ -344,19 +352,9 @@ let dfaGrammar dfa =
  *)
 
 
-let addition = {
-  nonterminals = ["S"; "X"];
-  terminals = ["x"; "+"; "="];
-  rules = [("S", "XSx");
-           ("S", "+=");
-           ("X+", "+X");
-           ("X", "x")];
-  startsym = "S"
-}
-
-(* Sequence of rewrites for xx+xxx=xxxxx:
-       S
-    -> XSx
+(* ADDITION
+   Sequence of rewrites for xx+xxx=xxxxx:
+   S-> XSx
     -> xSx
     -> xXSxx
     -> xxSxx
@@ -372,8 +370,7 @@ let addition = {
     -> xx+xxx=xxxxx
 
    Sequence of rewrites for xxx+xx=xxxxx:
-       S
-    -> XSx
+   S-> XSx
     -> xSx
     -> xXSxx
     -> xxSxx
@@ -387,8 +384,70 @@ let addition = {
     -> xxx+xX=xxxxx
     -> xxx+xx=xxxxx
 *)
+let addition = {
+  nonterminals = ["S"; "X"];
+  terminals = ["x"; "+"; "="];
+  rules = [("S", "XSx");
+           ("S", "+=");
+           ("X+", "+X");
+           ("X", "x")];
+  startsym = "S"
+}
 
 
+(* POWERS2 FINAL
+   sequence of rewrites for aaaa:
+   S-> BXaE
+    -> BXXaE
+    -> XXaE
+    -> XaaXE
+    -> aaXaXE
+    -> aaaaXXE
+    -> aaaaXE
+    -> aaaa
+
+   sequence of rewrites for aaaaaaaa:
+   S-> BXaE
+    -> BXXaE
+    -> BXXXaE
+    -> XXXaE
+    -> XXaaXE
+    -> XaaXaXE
+    -> aaXaXaXE
+    -> aaaaXXaXE
+    -> aaaaXaaXXE
+    -> aaaaaaXaXXE
+    -> aaaaaaaaXXXE
+    -> aaaaaaaaXXE
+    -> aaaaaaaaXE
+    -> aaaaaaaa
+*)
+let powers2 = {
+  nonterminals = ["B";"X";"E";"S"];
+  terminals = ["a"];
+  rules = [("S", "BXaE");
+           ("S", "a");
+           ("Xa", "aaX");
+           ("XE", "");
+           ("B", "BX");
+           ("B", "");
+           ("XXE", "XE")];
+  startsym = "S"
+}
+
+
+(* POWERS2 ATTEMPT 1
+   sequence of rewrites for aaaa:
+   0-> 1
+    -> 2
+    -> aaaa
+
+   sequence of rewrites for aaaaaaaa:
+   0-> 1
+    -> 2
+    -> 3
+    -> aaaaaaaa
+*)
 let rec pow b n = (* computes b^n for n > 0*)
   if (n < 0) then failwith "n not in range"
   else if (n = 0) then 1
@@ -398,7 +457,7 @@ let rec repeatA n =
   if (n = 0) then ""
   else "a" ^ repeatA (n-1)
 
-let powers2 =
+let powers2limited =
   let numbers = [0;1;2;3;4;5;6;7;8]
   in let transitionRules = List.map (fun number -> (string_of_int number, string_of_int (number + 1))) numbers (* do transition work in the exponent domain *)
   in let terminalRules = List.map (fun number -> (string_of_int number, repeatA (pow 2 number))) numbers (* convert to nonterminals at end *)
@@ -409,16 +468,75 @@ let powers2 =
     startsym = "0"
   }
 
-(* Sequence of rewrites for aaaa:
-       0
-    -> 1
-    -> 2
-    -> aaaa
 
-   Sequence of rewrites for aaaaaaaa:
-       0
-    -> 1
-    -> 2
-    -> 3
-    -> aaaaaaaa
+(* POWERS2 ATTEMPT 2
+   sequence of rewrites for aa:
+   A-> SB
+    -> S[>,>]B
+    -> [>,>]NB
+    -> [>,>]N[a,a]B
+    -> [>,>][a,a]1B
+    -> [>,>][a,a]1[a,a]B
+    -> [>,>][a,a][a,X]EB
+    -> [>,>][a,a][a,X]E[_,_]B
+    -> [>,>][a,a]R[a,X][_,_]B
+    -> [>,>]R[a,a][a,X][_,_]B
+    -> R[>,>][a,a][a,X][_,_]B
+    -> [>,>]N[a,a][a,X][_,_]B
+    -> [>,>][a,a]1[a,X][_,_]B
+    -> [>,>][a,a][a,X]1[_,_]B
+    -> [>,>][a,a][a,X]D[_,_]B
+    -> [>,>][a,a]DaD[_,_]B
+    -> [>,>]DaDaD[_,_]B
+    -> DaDaD[_,_]B
+    -> aDaD[_,_]B
+    -> aaD[_,_]B
+    -> aaD_DB
+    -> aa_DB
+    -> aaDB
+    -> aaB
+    -> aaC
+    -> aa
 *)
+let powers2turing = {
+  nonterminals = ["A";"B";"C";"S";"N";"1";"E";"O";"R";"D";"[";"]";">";","];
+  terminals = ["a"];
+  rules = [(* setup rules *)
+           ("A", "SB");
+           ("B", "[>,>]B");
+           ("B", "[a,a]B");
+           ("B", "[_,_]B");
+           ("B", "C");
+           ("C", "");
+
+           (* TM transitions *)
+           ("S[>,>]", "[>,>]N");
+
+           ("N[a,a]", "[a,a]1");
+           ("N[a,X]", "[a,X]N");
+
+           ("1[a,a]", "[a,X]E");
+           ("1[a,X]", "[a,X]1");
+           ("1[_,_]", "D[_,_]");
+
+           ("E[a,a]", "[a,a]O");
+           ("E[a,X]", "[a,X]E");
+           ("[a,X]E[_,_]", "R[a,X][_,_]");
+
+           ("O[a,X]", "[a,X]O");
+           ("O[a,a]", "[a,X]E");
+
+           ("[a,a]R[a,X]", "R[a,a][a,X]");
+           ("[>,>]R[a,a]", "R[>,>][a,a]");
+           ("R[>,>]", "[>,>]N");
+
+           (* finish rules *)
+           ("D[_,_]", "D_D");
+           ("_", "");
+           ("D","");
+           ("[a,a]D", "DaD");
+           ("[a,X]D", "DaD");
+           ("[>,>]D", "D")
+          ];
+  startsym = "A"
+}
