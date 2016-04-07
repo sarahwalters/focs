@@ -5,8 +5,12 @@ let zero = (simplify q1_defs "_0");;
 let one = (simplify q1_defs "_1");;
 let two = (simplify q1_defs "_2");;
 let three = (simplify q1_defs "_3");;
+let four = (simplify q1_defs "_4");;
 let five = (simplify q1_defs "_5");;
 let six = (simplify q1_defs "succ _5");;
+let nine = (simplify q1_defs "plus _5 _4");;
+let twelve = (simplify q1_defs "plus (plus _4 _4) _4")
+let fifteen = (simplify q1_defs "plus (plus _5 _5) _5")
 let t = (simplify default_defs "true");;
 let f = (simplify default_defs "false");;
 
@@ -108,6 +112,49 @@ let times_int_test test_ctxt =
   assert_equal t (simplify q2_defs "fst (times_int (neg_int (int _3)) (neg_int (int _2)))");;
   assert_equal six (simplify q2_defs "snd (times_int (neg_int (int _3)) (neg_int (int _2)))");;
 
+let is_empty_test test_ctxt =
+  assert_equal t (simplify q3_defs "is_empty empty");;
+  assert_equal f (simplify q3_defs "is_empty (cons A empty)");;
+  assert_equal f (simplify q3_defs "is_empty (cons B (cons A empty))");;
+
+let cons_test test_ctxt =
+  assert_equal "A" (simplify q3_defs "head (cons A empty)");;
+  assert_equal "A" (simplify q3_defs "head (tail (cons B (cons A empty)))");;
+  assert_equal "B" (simplify q3_defs "head (cons B (cons A empty))");;
+
+let match_list_test test_ctxt =
+  assert_equal "a" (simplify q3_defs "match_list empty a f");;
+  assert_equal "f h t" (simplify q3_defs "match_list (cons h t) a f");;
+  assert_equal "A" (simplify q3_defs "match_list (cons A empty) a (/h./t.h)");;
+  assert_equal "A" (simplify q3_defs "match_list (cons A (cons B empty)) a (/h./t.h)");;
+  assert_equal "B" (simplify q3_defs "match_list (cons A (cons B empty)) a (/h./t.match_list t a (/h./t.h))");;
+
+let length_test test_ctxt =
+  assert_equal zero (simplify q3_defs "length empty");;
+  assert_equal one (simplify q3_defs "length (cons A empty)");;
+  assert_equal two (simplify q3_defs "length (cons A (cons B empty))");;
+  assert_equal three (simplify q3_defs "length (cons A (cons B (cons C empty)))");;
+
+let sum_test test_ctxt =
+  assert_equal zero (simplify q3_defs "sum empty");;
+  assert_equal one (simplify q3_defs "sum (cons _1 empty)");;
+  assert_equal four (simplify q3_defs "sum (cons _1 (cons _3 empty))");;
+  assert_equal nine (simplify q3_defs "sum (cons _1 (cons _3 (cons _5 empty)))");;
+
+let append_test test_ctxt =
+  assert_equal zero (simplify q3_defs "length (append empty empty)");;
+  assert_equal two (simplify q3_defs "length (append empty (cons A (cons B empty)))");;
+  assert_equal five (simplify q3_defs "length (append (cons C (cons D (cons E empty))) (cons A (cons B empty)))");;
+  assert_equal zero (simplify q3_defs "sum (append empty empty)");;
+  assert_equal three (simplify q3_defs "sum (append empty (cons _1 (cons _2 empty)))");;
+  assert_equal fifteen (simplify q3_defs "sum (append (cons _3 (cons _4 (cons _5 empty))) (cons _1 (cons _2 empty)))");;
+
+let map_test test_ctxt =
+  assert_equal zero (simplify q3_defs "length (map (/x.plus x x) empty)");;
+  assert_equal three (simplify q3_defs "length (map (/x.plus x x) (cons _1 (cons _2 (cons _3 empty))))");;
+  assert_equal twelve (simplify q3_defs "sum (map (/x.plus x x) (cons _1 (cons _2 (cons _3 empty))))");;
+  assert_equal two (simplify q3_defs "match_list (map (/x.plus x x) (cons _1 (cons _2 (cons _3 empty)))) X (/h./t.h)");;
+
 let suite =
   "suite">:::
     ["minus_test">::minus_test;
@@ -122,7 +169,12 @@ let suite =
      "neg_int_test">::neg_int_test;
      "plus_int_test">::plus_int_test;
      "times_int_test">::times_int_test;
-     ]
+     "is_empty_test">::is_empty_test;
+     "cons_test">::cons_test;
+     "match_list_test">::match_list_test;
+     "length_test">::length_test;
+     "append_test">::append_test;
+     "map_test">::map_test]
 
 let () =
    run_test_tt_main suite
