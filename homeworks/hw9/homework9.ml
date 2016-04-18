@@ -2,11 +2,11 @@
 
 HOMEWORK 9
 
-Name:
+Name: Sarah Walters
 
-Email:
+Email: sarah.walters@students.olin.edu
 
-Remarks, if any:
+Remarks, if any: Took ~5h
 
 *)
 
@@ -228,21 +228,13 @@ let rec zip_finite arr1 arr2 =
 
 let stripes s1 s2 = map (fun (ps1, ps2) -> zip_finite ps1 ps2) (zip (prefixes s1) (rev_prefixes s2))
 
-let nonempty s = match s with
-  | [] -> false
-  | h::t -> true
-
-let rec fby_arr arr s =
-  match arr with
-  | [] -> s
-  | h::t -> fby (cst h) (fun () -> fby_arr t s)
-
 let rec flatten ss =
-  let nonempty = filter (fun c s -> nonempty s) (cst 0) ss in
-    let (h, t) = split nonempty in
-      let [hfirst] = prefix 1 h in
-        fby_arr hfirst (cst 0)
-        (* fby_arr hfirst (flatten t) *)
+  let (h, t) = split ss in
+    let hfirst = nth 0 h in
+      match hfirst with
+      | [] -> flatten t
+      | hfirst_h::hfirst_t ->
+          let ss' = fby (cst hfirst_t) (fun () -> t) in
+            fby (cst hfirst_h) (fun () -> flatten ss')
 
-
-let pairs s1 s2 =  failwith "not implemented"
+let pairs s1 s2 = flatten (stripes s1 s2)
