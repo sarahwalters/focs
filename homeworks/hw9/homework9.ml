@@ -6,7 +6,7 @@ Name: Sarah Walters
 
 Email: sarah.walters@students.olin.edu
 
-Remarks, if any: Took ~5h
+Remarks, if any: Took ~4h
 
 *)
 
