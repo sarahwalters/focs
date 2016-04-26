@@ -50,15 +50,6 @@ let pbt bt =
   loop bt ""
 
 
-
-let sample = 
-  Node (10, Node (3, Node (7, Empty, Empty),
-                     Node (5, Empty, Empty)),
-            Node (6, Node (99, Empty, 
-                               Node (66, Empty, Empty)),
-                     Empty))
-
-
 (* Q1 *)
 
 let rec size t = 
@@ -161,10 +152,10 @@ let bstify t = (* this is naive *)
 *)
 let avl_leftleft z sub_y t4 = 
   match sub_y with (* sub_y is the subtree rooted at y *)
-  | Empty -> failwith "leftleft suby"
+  | Empty -> failwith "Left-left: first left rotate failed"
   | Node(y,sub_x,t3) ->
       match sub_x with (* sub_x is the subtree rooted at x *)
-      | Empty -> failwith "leftleft subx"
+      | Empty -> failwith "Left-left: second left rotate failed"
       | Node(x,t1,t2) -> Node(y, Node(x,t1,t2), Node(z,t3,t4))    
 
 (* 
@@ -178,10 +169,10 @@ T1   x                        T1  T2 T3  T4
 *)
 let avl_leftright z sub_y t4 =
   match sub_y with
-  | Empty -> failwith "leftright suby"
+  | Empty -> failwith "Left-right: left rotate failed"
   | Node(y,t1,sub_x) -> 
       match sub_x with
-      | Empty -> failwith "leftright subx"
+      | Empty -> failwith "Left-right: right rotate failed"
       | Node(x,t2,t3) -> Node(x, Node(y,t1,t2), Node(z,t3,t4))
 
 (* 
@@ -195,10 +186,10 @@ T1   y     Left Rotate          z      x
 *)
 let avl_rightright z t1 sub_y =
   match sub_y with
-  | Empty -> failwith "rightright suby"
+  | Empty -> failwith "Right-right: first right rotate failed"
   | Node(y,t2,sub_x) -> 
       match sub_x with
-      | Empty -> failwith "rightright subx"
+      | Empty -> failwith "Right-right: second right rotate failed"
       | Node(x,t3,t4) -> Node(y, Node(z,t1,t2), Node(x,t3,t4))
 
 (* 
@@ -212,10 +203,10 @@ T2   T3
 *)
 let avl_rightleft z t1 sub_y = 
   match sub_y with
-  | Empty -> failwith "rightleft suby"
+  | Empty -> failwith "Right-left: right rotate failed"
   | Node(y,sub_x,t4) -> 
       match sub_x with
-      | Empty -> failwith "rightleft subx" 
+      | Empty -> failwith "Right-left: left rotate failed" 
       | Node(x,t2,t3) -> Node(x, Node(z,t1,t2), Node(y,t3,t4))
 
 let rec avl_insert t x =
