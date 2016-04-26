@@ -569,3 +569,45 @@ let binaryAddition = { states = ["start"; "ff1"; "lsb1"; "cont1_#"; "cont1_0"; "
                     | ("rewind", ">") -> ("ff1", ">", 1)
                     | ("rewind", "_") -> ("rewind", "_", 0))}
 
+
+let powers2 = {
+	states = ["start"; "none"; "one"; "odd"; "even"; "rewind"; "acc"; "rej"];
+    input_alphabet = ["a"];
+    tape_alphabet = [">"; "a"; "X"; "_"];
+    blank = "_";
+    left_marker = ">";
+    start = "start";
+    accept = "acc";
+    reject = "rej";
+    delta = (fun inp -> match inp with
+             | ("start", ">") -> ("none", ">", 1)
+             | ("start", "a") -> ("rej", "a", 1)
+             | ("start", "X") -> ("rej", "X", 1)
+             | ("start", "_") -> ("rej", "_", 1)
+
+             | ("none", ">") -> ("rej", ">", 1)
+             | ("none", "a") -> ("one", "a", 1)
+             | ("none", "X") -> ("none", "X", 1)
+             | ("none", "_") -> ("rej", "_", 1)
+
+             | ("one", ">") -> ("rej", ">", 1)
+             | ("one", "a") -> ("even", "X", 1)
+             | ("one", "X") -> ("one", "X", 1)
+             | ("one", "_") -> ("acc", "_", 1)
+
+             | ("even", ">") -> ("rej", ">", 1)
+             | ("even", "a") -> ("odd", "a", 1)
+             | ("even", "X") -> ("even", "X", 1)
+             | ("even", "_") -> ("rewind", "_", 0)
+
+             | ("odd", ">") -> ("rej", ">", 1)
+             | ("odd", "a") -> ("even", "X", 1)
+             | ("odd", "X") -> ("odd", "X", 1)
+             | ("odd", "_") -> ("rej", "_", 1)
+
+             | ("rewind", ">") -> ("none", ">", 1)
+             | ("rewind", "a") -> ("rewind", "a", 0)
+             | ("rewind", "X") -> ("rewind", "X", 0)
+             | ("rewind", "_") -> ("rej", "_", 1)
+            )
+}
